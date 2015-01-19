@@ -1,0 +1,7 @@
+.snake-block {
+	background-color: #339966;
+	position: relative;
+}
+.snake-block--head {
+	background-color: #33CC66;
+}
