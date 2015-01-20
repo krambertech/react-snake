@@ -42,7 +42,7 @@ var Canvas = React.createClass({
 		    this.moveSnakeRight();
 		    return false;
 		});
-		this.state.timer = setInterval(this.moveSnake, 300);
+		this.state.timer = setInterval(this.moveSnake, 200);
 
 	},
 

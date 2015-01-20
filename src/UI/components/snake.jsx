@@ -8,9 +8,9 @@ var Snake = React.createClass({
 
 	getInitialState() {
 		return {
-			length: 4,
-			positionX: 0,
-			positionY: 0,
+			length: 5,
+			positionTop: 0,
+			positionLeft: 0,
 		};
 	},
 
@@ -19,14 +19,22 @@ var Snake = React.createClass({
 	},
 
 	componentWillReceiveProps(nextProps) {
-		if (this.state.direction != nextProps.direction) {
-			this.changeDirection(nextProps.direction);
+
+		if (this.props.direction != nextProps.direction) {
+			this.forceUpdate();
 		}
-		if (this.props.time != nextProps.time) {
-			console.log();
-			this.move();
-		}
+		
 	},
+
+	/*componentDidUpdate() {
+		var snakePosition = this.getSnakePosition();
+		this.setState({
+			positionTop: snakePosition.top,
+			positionLeft: snakePosition.left
+		});
+
+		//console.log(snakePosition.top+" ; "+snakePosition.left);
+	},*/
 
 	grow() {
 		this.state.body.push(<SnakeBlock isHead={false} 
@@ -38,24 +46,25 @@ var Snake = React.createClass({
 
 	getSnakeBody() {
 		var body = [];
-		console.log(this.props.direction);
 		for (var i=0; i<this.state.length; i++) {
 			body.push(<SnakeBlock isHead={false} 
 								  step={this.props.step}
 								  direction={this.props.direction}
-								  time={this.props.time}
-								  delay={i} />);
+								  time={this.props.time} 
+								  index={i+1}/>);
 		}
 		return body;
 	},
 
+	getSnakePosition() {
+		return this.refs.head.getBlockPosition();
+	},
+
 	render() {
-		var style = {
-			
-		};
-		return (<div className="snake" style={style}>
+		return (<div className="snake">
 					<SnakeBlock ref="head" 
 								isHead={true} 
+								index={0}
 								step={this.props.step}
 								direction={this.props.direction}
 								time={this.props.time} />

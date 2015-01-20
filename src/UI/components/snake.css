@@ -3,4 +3,9 @@
 	width: 20px;
 	background-color: green;
 	position: relative;
+	min-width: 60px;
+}
+.snake {
+	float: left;
+	position:absolute;
 }

@@ -21,7 +21,7 @@ var SnakeBlock = React.createClass({
 	},
 
 	componentWillReceiveProps(nextProps) {
-		if (this.state.direction != nextProps.direction) {
+		if ( this.directionIsChanged(nextProps.direction) ) {
 			this.changeDirection(nextProps.direction);
 		}
 		if (this.props.time != nextProps.time) {
@@ -29,15 +29,46 @@ var SnakeBlock = React.createClass({
 		}
 	},
 
+	getBlockPosition() {
+		return {
+			top: this.state.top,
+			left: this.state.left
+		};
+	},
+
+	directionIsChanged(newDirection) {
+		var turns = this.state.turns;
+		var last = this.state.turns.length-1;
+
+		if ( ( !this.turnsAreEmpty() ) && (turns[last].direction != newDirection) ) {
+			console.log("A i'm #" + this.props.index + " and my direction changed to " + newDirection);
+			return true;
+		}
+
+		if ( ( this.turnsAreEmpty() ) && (this.state.direction != newDirection) ) {
+			console.log("B i'm #" + this.props.index + " and my direction changed to " + newDirection);
+			return true;
+		}
+
+		return false;
+	},
+
+	turnsAreEmpty() {
+		return (this.state.turns.length  === 0) 
+			   ? true
+			   : false;
+	},
+
 	changeDirection(newDirection) {
-		if (this.props.delay === 0) {
+		if (this.props.isHead) {
 			this.setState({
 				direction: newDirection
 			});
 		}
 		else {
+			console.log(this.props.index);
 			this.state.turns.push({
-				delay: this.props.delay,
+				delay: this.props.index-1,
 				direction: newDirection
 			});
 			this.forceUpdate();
@@ -74,28 +105,28 @@ var SnakeBlock = React.createClass({
 	},
 
 	move() {
+		
 		var newTurns = this.state.turns;
-		if (newTurns.length  !== 0) {
+
+		if ( !this.turnsAreEmpty() ) {
+
 			if (newTurns[0].delay === 0) {
-				var newDirection = newTurns[0].direction;
+				this.setState({
+					direction: newTurns[0].direction
+				});
 				newTurns.shift();
-				this.setState({
-					direction: newDirection,
-					turns: newTurns
-				});
-				this.crawlOneStep(newDirection);
 			}
-			else {
-				newTurns[0].delay--;
-				this.setState({
-					turns: newTurns
-				});
-				this.crawlOneStep(this.state.sirection);
-			}		
+
+			for (var i=0; i<newTurns.length; i++) {
+				newTurns[i].delay--;
+			}
+	
+			this.setState({
+				turns: newTurns
+			});
 		}
-		else {
-			this.crawlOneStep(this.state.sirection);
-		}
+
+		this.crawlOneStep(this.state.direction);
 	},
 
 
